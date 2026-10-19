@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vad är MoE?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+  /* Layout: samma läskolumn som MCP-sidan i serien; figurerna får gå lite bredare än texten. */
+  :root {
+    --bg: #F2F5F7;
+    --surface: #FFFFFF;
+    --ink: #12222C;
+    --muted: #4C5D68;
+    --line: #B9C7D0;
+    --accent: #0E7A72;
+    --accent-soft: #DDF1EE;
+    --on-accent: #FFFFFF;
+    --warn: #C2410C;
+    --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+    --font-body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0D1519; --surface: #152127; --ink: #E5EDF1; --muted: #9DB0BA;
+      --line: #34474F; --accent: #3CCFBE; --accent-soft: #123430; --on-accent: #06201D; --warn: #FB8A4C;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0D1519; --surface: #152127; --ink: #E5EDF1; --muted: #9DB0BA;
+    --line: #34474F; --accent: #3CCFBE; --accent-soft: #123430; --on-accent: #06201D; --warn: #FB8A4C;
+    color-scheme: dark;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+  }
+  .page {
+    max-width: 56rem;
+    margin: 0 auto;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    padding-block: 3rem 4rem;
+    display: grid;
+    gap: 3.5rem;
+  }
+  .prose { max-width: 40rem; }
+  .prose > * + * { margin-top: 0.85rem; }
+  h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; line-height: 1.15; }
+  h1 { font-size: clamp(2.4rem, 7vw, 3.75rem); font-weight: 800; letter-spacing: -0.02em; }
+  h2 { font-size: clamp(1.5rem, 3.6vw, 2rem); font-weight: 800; letter-spacing: -0.01em; }
+  h3 { font-size: 1.2rem; font-weight: 600; }
+  p { margin: 0; }
+  .eyebrow {
+    font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--accent);
+  }
+  .lead { font-size: 1.25rem; line-height: 1.55; }
+  .abbr { color: var(--accent); font-weight: 700; }
+
+  header.hero { display: grid; gap: 1rem; }
+  .hero .prose > * + * { margin-top: 1rem; }
+  .analogy {
+    display: inline-flex; flex-wrap: wrap; gap: 0.5rem 0.75rem; align-items: center;
+    border: 1.5px solid var(--accent); border-radius: 999px; padding: 0.5rem 1rem;
+    font-weight: 700; color: var(--ink); background: var(--accent-soft);
+  }
+
+  section { display: grid; gap: 1.25rem; }
+
+  figure { margin: 0; display: grid; gap: 0.6rem; }
+  figcaption { color: var(--muted); font-size: 0.95rem; max-width: 40rem; }
+  .fig-frame {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+    padding: 1rem; overflow-x: auto;
+  }
+  .fig-frame svg { display: block; width: 100%; height: auto; }
+  .fig-frame.wide svg { min-width: 600px; }
+  .fig-frame.mid svg { min-width: 460px; }
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .pair > figure { min-width: 0; }
+  .panel-title { font-family: var(--font-display); font-weight: 600; font-size: 1.1rem; }
+  .tag { font-family: var(--font-mono); font-size: 0.8rem; }
+  .tag.bad { color: var(--warn); }
+  .tag.good { color: var(--accent); }
+  @media (max-width: 640px) { .pair { grid-template-columns: 1fr; } }
+
+  /* SVG-klasser, alla färger från tokens */
+  .d-box { fill: var(--surface); stroke: var(--line); stroke-width: 1.5; }
+  .d-box-acc { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.5; }
+  .d-box-on { fill: var(--accent); stroke: var(--accent); stroke-width: 1.5; }
+  .d-fill-acc { fill: var(--accent); }
+  .d-fill-line { fill: var(--line); }
+  .d-text { fill: var(--ink); font-family: var(--font-body); font-size: 13px; }
+  .d-text-b { fill: var(--ink); font-family: var(--font-body); font-size: 13px; font-weight: 700; }
+  .d-small { fill: var(--muted); font-family: var(--font-body); font-size: 12px; }
+  .d-dim { fill: var(--muted); font-family: var(--font-body); font-size: 12px; }
+  .d-mono { fill: var(--accent); font-family: var(--font-mono); font-size: 11px; }
+  .d-mono-m { fill: var(--muted); font-family: var(--font-mono); font-size: 11px; }
+  .d-on-acc { fill: var(--on-accent); font-family: var(--font-body); font-size: 13px; font-weight: 700; }
+  .d-line { stroke: var(--muted); stroke-width: 1.5; fill: none; }
+  .d-line-acc { stroke: var(--accent); stroke-width: 2.2; fill: none; }
+  .d-dash { stroke: var(--line); stroke-width: 1.3; stroke-dasharray: 4 5; fill: none; }
+  .d-arrowhead { fill: var(--muted); }
+  .d-arrowhead-acc { fill: var(--accent); }
+
+  /* De tre delarna */
+  .roles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  .role { display: grid; gap: 0.35rem; align-content: start; min-width: 0; }
+  .role .term { font-family: var(--font-mono); font-size: 0.8rem; color: var(--muted); }
+  @media (max-width: 720px) { .roles { grid-template-columns: 1fr; } }
+
+  /* Myt-ruta */
+  .note {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+    padding: 1.1rem 1.25rem; display: grid; gap: 0.5rem; max-width: 40rem;
+  }
+  .note .label { font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--warn); }
+
+  /* Andel aktiva parametrar */
+  .bars { display: grid; gap: 1.25rem; }
+  .bar-row { display: grid; gap: 0.4rem; }
+  .bar-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.25rem 1rem; }
+  .bar-head .name { font-weight: 700; }
+  .bar-head .nums { font-family: var(--font-mono); font-size: 0.85rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .track { height: 22px; border-radius: 6px; background: var(--accent-soft); border: 1px solid var(--line); overflow: hidden; }
+  .fill { height: 100%; background: var(--accent); }
+  .legend { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; font-size: 0.9rem; color: var(--muted); }
+  .legend span { display: inline-flex; align-items: center; gap: 0.4rem; }
+  .sw { width: 14px; height: 14px; border-radius: 3px; display: inline-block; border: 1px solid var(--line); }
+  .sw.on { background: var(--accent); }
+  .sw.off { background: var(--accent-soft); }
+
+  /* För- och nackdelar */
+  .proscons { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .proscons > div { display: grid; gap: 0.75rem; align-content: start; min-width: 0; }
+  @media (max-width: 640px) { .proscons { grid-template-columns: 1fr; } }
+  ul.marks { margin: 0; padding: 0; list-style: none; display: grid; gap: 0.7rem; }
+  ul.marks li { padding-left: 1.6rem; position: relative; }
+  ul.marks.good li::before {
+    content: ""; position: absolute; left: 0.2rem; top: 0.5rem; width: 0.7rem; height: 0.4rem;
+    border-left: 2.5px solid var(--accent); border-bottom: 2.5px solid var(--accent); transform: rotate(-45deg);
+  }
+  ul.marks.bad li::before {
+    content: ""; position: absolute; left: 0.15rem; top: 0.75rem; width: 0.8rem; height: 2.5px; background: var(--warn);
+  }
+  h3.good { color: var(--accent); }
+  h3.bad { color: var(--warn); }
+
+  .remember { border-top: 3px solid var(--accent); padding-top: 1.5rem; display: grid; gap: 1rem; }
+  .remember ol { margin: 0; padding-left: 1.4rem; display: grid; gap: 0.6rem; max-width: 40rem; font-size: 1.1rem; }
+  .remember ol li::marker { font-family: var(--font-mono); color: var(--accent); }
+  .foot { color: var(--muted); font-size: 0.9rem; max-width: 40rem; }
+  body { margin: 0; }
+  img { max-width: 100%; }
+</style>
+</head>
+<body>
+<main class="page">
+
+  <header class="hero">
+    <span class="eyebrow">AI-kunskap · Grunder</span>
+    <h1>Vad är MoE?</h1>
+    <div class="prose">
+      <p class="lead"><span class="abbr">MoE</span> står för <strong>Mixture of Experts</strong>, ungefär ”blandning av experter”. Det är ett sätt att bygga stora AI-modeller där modellen delas upp i många mindre delar, så kallade <strong>experter</strong>. För varje ord används bara några få av dem.</p>
+      <p class="analogy">Kort sagt: som en vårdcentral där receptionen skickar dig till rätt specialist, i stället för att alla läkare undersöker dig.</p>
+    </div>
+  </header>
+
+  <section>
+    <span class="eyebrow">Problemet</span>
+    <h2>Stora modeller är smarta, men tunga</h2>
+    <div class="prose">
+      <p>En AI-modell består av miljarder små tal, så kallade <strong>parametrar</strong>. Fler parametrar ger oftast en smartare modell som kan mer.</p>
+      <p>I en vanlig modell används <em>alla</em> parametrar för <em>varje</em> ord den läser eller skriver. Det kallas en <strong>tät</strong> modell. Ju större den blir, desto mer räknande krävs, och då blir den långsammare och dyrare att köra.</p>
+      <p>MoE löser det genom att bara väcka de delar som behövs just nu.</p>
+    </div>
+
+    <div class="pair">
+      <figure>
+        <div class="fig-frame">
+          <svg viewBox="0 0 300 280" role="img" aria-label="Tät modell: ett ord går in i modellen och hela modellen arbetar.">
+            <defs>
+              <marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+                <path class="d-arrowhead" d="M0 0 L10 5 L0 10 z"/>
+              </marker>
+            </defs>
+            <rect class="d-box" x="10" y="121" width="70" height="36" rx="8"/>
+            <text class="d-text-b" x="45" y="144" text-anchor="middle">Ord</text>
+            <line class="d-line" x1="80" y1="139" x2="118" y2="139" marker-end="url(#a1)"/>
+            <rect class="d-box-on" x="120" y="14" width="170" height="250" rx="12"/>
+            <text class="d-on-acc" x="205" y="135" text-anchor="middle">Hela modellen</text>
+            <text class="d-on-acc" x="205" y="154" text-anchor="middle">arbetar</text>
+          </svg>
+        </div>
+        <figcaption><span class="panel-title">Tät modell</span> · <span class="tag bad">100 % arbetar för varje ord</span></figcaption>
+      </figure>
+      <figure>
+        <div class="fig-frame">
+          <svg viewBox="0 0 300 280" role="img" aria-label="MoE-modell: ett ord går till en router som väljer två av åtta experter. Bara de två arbetar.">
+            <defs>
+              <marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+                <path class="d-arrowhead" d="M0 0 L10 5 L0 10 z"/>
+              </marker>
+            </defs>
+            <rect class="d-box" x="10" y="121" width="56" height="36" rx="8"/>
+            <text class="d-text-b" x="38" y="144" text-anchor="middle">Ord</text>
+            <line class="d-line" x1="66" y1="139" x2="83" y2="139" marker-end="url(#a2)"/>
+            <rect class="d-box-acc" x="85" y="121" width="64" height="36" rx="8"/>
+            <text class="d-text-b" x="117" y="144" text-anchor="middle">Router</text>
+
+            <line class="d-dash" x1="149" y1="139" x2="200" y2="27"/>
+            <line class="d-line-acc" x1="149" y1="139" x2="200" y2="59"/>
+            <line class="d-dash" x1="149" y1="139" x2="200" y2="91"/>
+            <line class="d-dash" x1="149" y1="139" x2="200" y2="123"/>
+            <line class="d-dash" x1="149" y1="139" x2="200" y2="155"/>
+            <line class="d-line-acc" x1="149" y1="139" x2="200" y2="187"/>
+            <line class="d-dash" x1="149" y1="139" x2="200" y2="219"/>
+            <line class="d-dash" x1="149" y1="139" x2="200" y2="251"/>
+
+            <rect class="d-box" x="200" y="14" width="90" height="26" rx="6"/>
+            <rect class="d-box-on" x="200" y="46" width="90" height="26" rx="6"/>
+            <rect class="d-box" x="200" y="78" width="90" height="26" rx="6"/>
+            <rect class="d-box" x="200" y="110" width="90" height="26" rx="6"/>
+            <rect class="d-box" x="200" y="142" width="90" height="26" rx="6"/>
+            <rect class="d-box-on" x="200" y="174" width="90" height="26" rx="6"/>
+            <rect class="d-box" x="200" y="206" width="90" height="26" rx="6"/>
+            <rect class="d-box" x="200" y="238" width="90" height="26" rx="6"/>
+            <text class="d-dim" x="245" y="31" text-anchor="middle">Expert 1</text>
+            <text class="d-on-acc" x="245" y="63" text-anchor="middle">Expert 2</text>
+            <text class="d-dim" x="245" y="95" text-anchor="middle">Expert 3</text>
+            <text class="d-dim" x="245" y="127" text-anchor="middle">Expert 4</text>
+            <text class="d-dim" x="245" y="159" text-anchor="middle">Expert 5</text>
+            <text class="d-on-acc" x="245" y="191" text-anchor="middle">Expert 6</text>
+            <text class="d-dim" x="245" y="223" text-anchor="middle">Expert 7</text>
+            <text class="d-dim" x="245" y="255" text-anchor="middle">Expert 8</text>
+          </svg>
+        </div>
+        <figcaption><span class="panel-title">MoE-modell</span> · <span class="tag good">2 av 8 experter arbetar</span><br>De andra sex vilar för det här ordet.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <span class="eyebrow">Hur det är uppbyggt</span>
+    <h2>Tre delar som samarbetar</h2>
+
+    <figure>
+      <div class="fig-frame wide">
+        <svg viewBox="0 0 760 280" role="img" aria-label="Ordet katt går till routern, som ger alla åtta experter en poäng. Expert 2 får 0,55 och expert 6 får 0,24, de högsta. Bara de två arbetar. Deras svar vägs ihop med 70 och 30 procent till ett resultat.">
+          <defs>
+            <marker id="a3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+              <path class="d-arrowhead" d="M0 0 L10 5 L0 10 z"/>
+            </marker>
+            <marker id="a3acc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+              <path class="d-arrowhead-acc" d="M0 0 L10 5 L0 10 z"/>
+            </marker>
+          </defs>
+
+          <!-- Ordet -->
+          <rect class="d-box" x="10" y="124" width="80" height="40" rx="8"/>
+          <text class="d-text-b" x="50" y="149" text-anchor="middle">”katt”</text>
+          <line class="d-line" x1="90" y1="144" x2="128" y2="144" marker-end="url(#a3)"/>
+
+          <!-- Routern med poäng -->
+          <rect class="d-box-acc" x="130" y="34" width="200" height="226" rx="12"/>
+          <text class="d-text-b" x="230" y="58" text-anchor="middle">Router ger poäng</text>
+          <!-- skala: 200 px = 1,00 -->
+          <text class="d-mono-m" x="145" y="104" >E1</text><rect class="d-fill-line" x="170" y="94" width="8" height="12" rx="2"/><text class="d-mono-m" x="184" y="104">0,04</text>
+          <text class="d-mono" x="145" y="126">E2</text><rect class="d-fill-acc" x="170" y="116" width="110" height="12" rx="2"/><text class="d-mono" x="286" y="126">0,55</text>
+          <text class="d-mono-m" x="145" y="148">E3</text><rect class="d-fill-line" x="170" y="138" width="6" height="12" rx="2"/><text class="d-mono-m" x="182" y="148">0,03</text>
+          <text class="d-mono-m" x="145" y="170">E4</text><rect class="d-fill-line" x="170" y="160" width="12" height="12" rx="2"/><text class="d-mono-m" x="188" y="170">0,06</text>
+          <text class="d-mono-m" x="145" y="192">E5</text><rect class="d-fill-line" x="170" y="182" width="10" height="12" rx="2"/><text class="d-mono-m" x="186" y="192">0,05</text>
+          <text class="d-mono" x="145" y="214">E6</text><rect class="d-fill-acc" x="170" y="204" width="48" height="12" rx="2"/><text class="d-mono" x="224" y="214">0,24</text>
+          <text class="d-mono-m" x="145" y="236">E7</text><rect class="d-fill-line" x="170" y="226" width="4" height="12" rx="2"/><text class="d-mono-m" x="180" y="236">0,02</text>
+          <text class="d-mono-m" x="145" y="258">E8</text><rect class="d-fill-line" x="170" y="248" width="2" height="12" rx="2"/><text class="d-mono-m" x="178" y="258">0,01</text>
+          <text class="d-mono-m" x="230" y="82" text-anchor="middle">välj de 2 högsta</text>
+
+          <!-- Till experterna -->
+          <line class="d-line-acc" x1="330" y1="122" x2="398" y2="100" marker-end="url(#a3acc)"/>
+          <line class="d-line-acc" x1="330" y1="210" x2="398" y2="200" marker-end="url(#a3acc)"/>
+          <rect class="d-box-on" x="400" y="80" width="110" height="40" rx="8"/>
+          <rect class="d-box-on" x="400" y="180" width="110" height="40" rx="8"/>
+          <text class="d-on-acc" x="455" y="105" text-anchor="middle">Expert 2</text>
+          <text class="d-on-acc" x="455" y="205" text-anchor="middle">Expert 6</text>
+
+          <!-- Sammanvägning -->
+          <line class="d-line-acc" x1="510" y1="100" x2="568" y2="136"/>
+          <line class="d-line-acc" x1="510" y1="200" x2="568" y2="164"/>
+          <text class="d-mono" x="522" y="90">× 70 %</text>
+          <text class="d-mono" x="522" y="226">× 30 %</text>
+          <circle class="d-box-acc" cx="590" cy="150" r="24"/>
+          <text class="d-text-b" x="590" y="156" text-anchor="middle">+</text>
+          <text class="d-small" x="590" y="194" text-anchor="middle">väg ihop</text>
+          <line class="d-line" x1="614" y1="150" x2="658" y2="150" marker-end="url(#a3)"/>
+          <rect class="d-box" x="660" y="130" width="90" height="40" rx="8"/>
+          <text class="d-text-b" x="705" y="155" text-anchor="middle">Resultat</text>
+        </svg>
+      </div>
+      <figcaption>Routern poängsätter alla experter, men bara de två bästa får jobba. Expert 2 hade mer än dubbelt så hög poäng, så dess svar väger tyngre: 0,55 och 0,24 blir 70 % och 30 %.</figcaption>
+    </figure>
+
+    <div class="roles">
+      <div class="role">
+        <span class="term">Experts · experter</span>
+        <h3>Specialisterna</h3>
+        <p>Många mindre delnätverk i modellen. Varje expert har under träningen blivit extra bra på vissa sorters ord och mönster.</p>
+      </div>
+      <div class="role">
+        <span class="term">Router · fördelare</span>
+        <h3>Receptionen</h3>
+        <p>En liten del som tittar på ordet och bestämmer vilka experter som passar bäst. Den lär sig också under träningen.</p>
+      </div>
+      <div class="role">
+        <span class="term">Combine · sammanvägning</span>
+        <h3>Slutsvaret</h3>
+        <p>De valda experternas svar läggs ihop. Den expert routern litade mest på får störst inflytande.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <span class="eyebrow">Ord för ord</span>
+    <h2>Varje ord får sina egna experter</h2>
+    <div class="prose">
+      <p>Valet görs om för varje ord. I en och samma mening kan olika ord skickas till helt olika experter.</p>
+    </div>
+
+    <figure>
+      <div class="fig-frame mid">
+        <svg viewBox="0 0 500 250" role="img" aria-label="Rutnät där sex ord i meningen Katten sov i den varma solen var och en skickas till två av åtta experter. Småorden i och den går till samma experter, 1 och 8.">
+          <text class="d-mono-m" x="125" y="24" text-anchor="middle">E1</text>
+          <text class="d-mono-m" x="170" y="24" text-anchor="middle">E2</text>
+          <text class="d-mono-m" x="215" y="24" text-anchor="middle">E3</text>
+          <text class="d-mono-m" x="260" y="24" text-anchor="middle">E4</text>
+          <text class="d-mono-m" x="305" y="24" text-anchor="middle">E5</text>
+          <text class="d-mono-m" x="350" y="24" text-anchor="middle">E6</text>
+          <text class="d-mono-m" x="395" y="24" text-anchor="middle">E7</text>
+          <text class="d-mono-m" x="440" y="24" text-anchor="middle">E8</text>
+
+          <!-- rad: x = 107 + 45*i, bredd 36; y = 36 + 34*r, höjd 26 -->
+          <g>
+            <text class="d-text-b" x="90" y="54" text-anchor="end">Katten</text>
+            <rect class="d-box" x="107" y="36" width="36" height="26" rx="5"/><rect class="d-box-on" x="152" y="36" width="36" height="26" rx="5"/><rect class="d-box" x="197" y="36" width="36" height="26" rx="5"/><rect class="d-box" x="242" y="36" width="36" height="26" rx="5"/><rect class="d-box" x="287" y="36" width="36" height="26" rx="5"/><rect class="d-box-on" x="332" y="36" width="36" height="26" rx="5"/><rect class="d-box" x="377" y="36" width="36" height="26" rx="5"/><rect class="d-box" x="422" y="36" width="36" height="26" rx="5"/>
+          </g>
+          <g>
+            <text class="d-text-b" x="90" y="88" text-anchor="end">sov</text>
+            <rect class="d-box" x="107" y="70" width="36" height="26" rx="5"/><rect class="d-box" x="152" y="70" width="36" height="26" rx="5"/><rect class="d-box-on" x="197" y="70" width="36" height="26" rx="5"/><rect class="d-box" x="242" y="70" width="36" height="26" rx="5"/><rect class="d-box" x="287" y="70" width="36" height="26" rx="5"/><rect class="d-box-on" x="332" y="70" width="36" height="26" rx="5"/><rect class="d-box" x="377" y="70" width="36" height="26" rx="5"/><rect class="d-box" x="422" y="70" width="36" height="26" rx="5"/>
+          </g>
+          <g>
+            <text class="d-text-b" x="90" y="122" text-anchor="end">i</text>
+            <rect class="d-box-on" x="107" y="104" width="36" height="26" rx="5"/><rect class="d-box" x="152" y="104" width="36" height="26" rx="5"/><rect class="d-box" x="197" y="104" width="36" height="26" rx="5"/><rect class="d-box" x="242" y="104" width="36" height="26" rx="5"/><rect class="d-box" x="287" y="104" width="36" height="26" rx="5"/><rect class="d-box" x="332" y="104" width="36" height="26" rx="5"/><rect class="d-box" x="377" y="104" width="36" height="26" rx="5"/><rect class="d-box-on" x="422" y="104" width="36" height="26" rx="5"/>
+          </g>
+          <g>
+            <text class="d-text-b" x="90" y="156" text-anchor="end">den</text>
+            <rect class="d-box-on" x="107" y="138" width="36" height="26" rx="5"/><rect class="d-box" x="152" y="138" width="36" height="26" rx="5"/><rect class="d-box" x="197" y="138" width="36" height="26" rx="5"/><rect class="d-box" x="242" y="138" width="36" height="26" rx="5"/><rect class="d-box" x="287" y="138" width="36" height="26" rx="5"/><rect class="d-box" x="332" y="138" width="36" height="26" rx="5"/><rect class="d-box" x="377" y="138" width="36" height="26" rx="5"/><rect class="d-box-on" x="422" y="138" width="36" height="26" rx="5"/>
+          </g>
+          <g>
+            <text class="d-text-b" x="90" y="190" text-anchor="end">varma</text>
+            <rect class="d-box" x="107" y="172" width="36" height="26" rx="5"/><rect class="d-box-on" x="152" y="172" width="36" height="26" rx="5"/><rect class="d-box" x="197" y="172" width="36" height="26" rx="5"/><rect class="d-box-on" x="242" y="172" width="36" height="26" rx="5"/><rect class="d-box" x="287" y="172" width="36" height="26" rx="5"/><rect class="d-box" x="332" y="172" width="36" height="26" rx="5"/><rect class="d-box" x="377" y="172" width="36" height="26" rx="5"/><rect class="d-box" x="422" y="172" width="36" height="26" rx="5"/>
+          </g>
+          <g>
+            <text class="d-text-b" x="90" y="224" text-anchor="end">solen</text>
+            <rect class="d-box" x="107" y="206" width="36" height="26" rx="5"/><rect class="d-box-on" x="152" y="206" width="36" height="26" rx="5"/><rect class="d-box" x="197" y="206" width="36" height="26" rx="5"/><rect class="d-box" x="242" y="206" width="36" height="26" rx="5"/><rect class="d-box-on" x="287" y="206" width="36" height="26" rx="5"/><rect class="d-box" x="332" y="206" width="36" height="26" rx="5"/><rect class="d-box" x="377" y="206" width="36" height="26" rx="5"/><rect class="d-box" x="422" y="206" width="36" height="26" rx="5"/>
+          </g>
+        </svg>
+      </div>
+      <figcaption>Ett påhittat exempel. Varje ord tänder två av åtta experter. Småorden ”i” och ”den” hamnar hos samma par, vilket är typiskt: experter specialiserar sig ofta på sorters ord snarare än ämnen. I en riktig modell händer detta dessutom i varje lager, med nya val varje gång.</figcaption>
+    </figure>
+
+    <div class="note">
+      <span class="label">Vanlig missuppfattning</span>
+      <p>Experterna är <strong>inte</strong> som mänskliga experter med var sitt ämne, som ”matte” eller ”juridik”. Ingen bestämmer vad de ska kunna. Specialiseringen växer fram av sig själv under träningen och handlar ofta om språkliga mönster, som skiljetecken, siffror eller vissa ordklasser.</p>
+    </div>
+  </section>
+
+  <section>
+    <span class="eyebrow">I verkligheten</span>
+    <h2>Stor modell, liten arbetsinsats</h2>
+    <div class="prose">
+      <p>Här är två kända MoE-modeller med öppet publicerade siffror. Stapeln visar hur stor del av modellen som faktiskt arbetar för varje ord.</p>
+    </div>
+    <div class="fig-frame">
+      <div class="bars">
+        <div class="bar-row">
+          <div class="bar-head"><span class="name">Mixtral 8x7B</span><span class="nums">8 experter, 2 aktiva · 13 av 47 miljarder parametrar ≈ 28 %</span></div>
+          <div class="track" role="img" aria-label="Mixtral 8x7B: 28 procent aktiva parametrar per ord"><div class="fill" style="width: 28%"></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-head"><span class="name">DeepSeek-V3</span><span class="nums">256 experter, 8 aktiva · 37 av 671 miljarder parametrar ≈ 5,5 %</span></div>
+          <div class="track" role="img" aria-label="DeepSeek-V3: 5,5 procent aktiva parametrar per ord"><div class="fill" style="width: 5.5%"></div></div>
+        </div>
+        <div class="legend"><span><i class="sw on"></i>arbetar för varje ord</span><span><i class="sw off"></i>vilar, men finns i minnet</span></div>
+      </div>
+    </div>
+    <div class="prose">
+      <p>DeepSeek-V3 vet alltså lika mycket som en jättemodell med 671 miljarder parametrar, men räknar ungefär som en modell med 37 miljarder.</p>
+    </div>
+  </section>
+
+  <section>
+    <span class="eyebrow">Fördelar och nackdelar</span>
+    <h2>Vad vinner man, och vad kostar det?</h2>
+    <div class="proscons">
+      <div>
+        <h3 class="good">Fördelar</h3>
+        <ul class="marks good">
+          <li><strong>Snabbare och billigare</strong> per ord, eftersom bara en liten del räknar.</li>
+          <li>Modellen kan bli <strong>mycket större och kunnigare</strong> utan att bli lika mycket långsammare.</li>
+          <li>Billigare att <strong>träna</strong> till samma kvalitet som en tät modell.</li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="bad">Nackdelar</h3>
+        <ul class="marks bad">
+          <li>Alla experter måste ändå <strong>få plats i minnet</strong>, även de som vilar. Det kräver stora datorer.</li>
+          <li>Svårare att träna. Routern kan börja <strong>favorisera några få experter</strong> medan andra aldrig används, så man måste styra så att lasten sprids.</li>
+          <li>Mer komplicerat att köra på <strong>många datorer samtidigt</strong>, eftersom orden skickas runt mellan experterna.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="remember">
+    <h2>Kom ihåg</h2>
+    <ol>
+      <li><strong>MoE delar upp en stor modell</strong> i många mindre experter.</li>
+      <li><strong>En router väljer</strong> några få experter för varje ord. Resten vilar.</li>
+      <li>Resultatet blir en modell som <strong>kan mycket men räknar lite</strong>, till priset av att den kräver mycket minne.</li>
+    </ol>
+    <p class="foot">Idén är gammal: den beskrevs redan 1991. Genombrottet för stora språkmodeller kom 2017, när forskare visade att man kunde använda tusentals experter och bara aktivera ett fåtal åt gången. I dag bygger många av de största AI-modellerna på MoE.</p>
+  </section>
+
+</main>
+</body>
+</html>

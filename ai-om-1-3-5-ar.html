@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AI om 1, 3 och 5 år</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+  /* Layout: samma läskolumn som resten av serien; tidslinjen och tabellen får gå bredare. */
+  :root {
+    --bg: #F2F5F7;
+    --surface: #FFFFFF;
+    --ink: #12222C;
+    --muted: #4C5D68;
+    --line: #B9C7D0;
+    --accent: #0E7A72;
+    --accent-soft: #DDF1EE;
+    --on-accent: #FFFFFF;
+    --warn: #C2410C;
+    --scen-a: #0A5C56;
+    --scen-b: #0E7A72;
+    --scen-c: #8FA3AE;
+    --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+    --font-body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0D1519; --surface: #152127; --ink: #E5EDF1; --muted: #9DB0BA;
+      --line: #34474F; --accent: #3CCFBE; --accent-soft: #123430; --on-accent: #06201D; --warn: #FB8A4C;
+      --scen-a: #7FE3D6; --scen-b: #3CCFBE; --scen-c: #5D707A;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0D1519; --surface: #152127; --ink: #E5EDF1; --muted: #9DB0BA;
+    --line: #34474F; --accent: #3CCFBE; --accent-soft: #123430; --on-accent: #06201D; --warn: #FB8A4C;
+    --scen-a: #7FE3D6; --scen-b: #3CCFBE; --scen-c: #5D707A;
+    color-scheme: dark;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+  }
+  .page {
+    max-width: 56rem;
+    margin: 0 auto;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    padding-block: 3rem 4rem;
+    display: grid;
+    gap: 3.5rem;
+  }
+  .prose { max-width: 40rem; }
+  .prose > * + * { margin-top: 0.85rem; }
+  h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; line-height: 1.15; }
+  h1 { font-size: clamp(2.4rem, 7vw, 3.75rem); font-weight: 800; letter-spacing: -0.02em; }
+  h2 { font-size: clamp(1.5rem, 3.6vw, 2rem); font-weight: 800; letter-spacing: -0.01em; }
+  h3 { font-size: 1.2rem; font-weight: 600; }
+  p { margin: 0; }
+  a { color: var(--accent); }
+  a:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .eyebrow {
+    font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--accent);
+  }
+  .lead { font-size: 1.25rem; line-height: 1.55; }
+  header.hero { display: grid; gap: 1rem; }
+  .hero .prose > * + * { margin-top: 1rem; }
+  .disclose {
+    border-left: 3px solid var(--line); padding-left: 0.9rem; color: var(--muted); font-size: 0.95rem; max-width: 40rem;
+  }
+
+  section { display: grid; gap: 1.25rem; }
+
+  /* Sammanfattning i tre horisonter */
+  .horizons { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  .horizon {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+    padding: 1.1rem; display: grid; gap: 0.4rem; align-content: start; min-width: 0;
+  }
+  .horizon .when { font-family: var(--font-mono); font-size: 0.8rem; color: var(--muted); }
+  .horizon .big { font-family: var(--font-display); font-weight: 800; font-size: 1.6rem; color: var(--accent); line-height: 1.1; }
+  @media (max-width: 720px) { .horizons { grid-template-columns: 1fr; } }
+
+  /* Figurer */
+  figure { margin: 0; display: grid; gap: 0.6rem; }
+  figcaption { color: var(--muted); font-size: 0.95rem; max-width: 40rem; }
+  .fig-frame {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+    padding: 1rem; overflow-x: auto;
+  }
+  .fig-frame svg { display: block; width: 100%; height: auto; min-width: 640px; }
+  .d-axis { stroke: var(--muted); stroke-width: 2; fill: none; }
+  .d-tick { stroke: var(--line); stroke-width: 1.5; fill: none; }
+  .d-tick-acc { stroke: var(--accent); stroke-width: 1.5; fill: none; }
+  .d-dot { fill: var(--accent); }
+  .d-dot-now { fill: var(--surface); stroke: var(--accent); stroke-width: 2.5; }
+  .d-ev { fill: var(--surface); stroke: var(--muted); stroke-width: 1.5; }
+  .d-year { fill: var(--muted); font-family: var(--font-mono); font-size: 11px; }
+  .d-h { fill: var(--ink); font-family: var(--font-display); font-size: 15px; font-weight: 800; }
+  .d-hs { fill: var(--muted); font-family: var(--font-body); font-size: 12px; }
+  .d-date { fill: var(--accent); font-family: var(--font-mono); font-size: 11px; }
+  .d-lab { fill: var(--ink); font-family: var(--font-body); font-size: 12.5px; }
+
+  /* Faktatabell */
+  .table-wrap { overflow-x: auto; }
+  table.facts { border-collapse: collapse; width: 100%; min-width: 38rem; font-size: 0.97rem; }
+  table.facts th, table.facts td { text-align: left; vertical-align: top; padding: 0.6rem 0.7rem; border-bottom: 1px solid var(--line); }
+  table.facts thead th {
+    font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--muted); border-bottom: 2px solid var(--line);
+  }
+  table.facts tbody th { font-weight: 700; width: 20%; }
+  table.facts td.src { font-size: 0.88rem; white-space: nowrap; }
+  .chip {
+    display: inline-block; font-family: var(--font-mono); font-size: 0.75rem; padding: 0.1rem 0.5rem;
+    border-radius: 999px; border: 1.5px solid var(--line); color: var(--muted); white-space: nowrap;
+  }
+  .chip.hog { border-color: var(--accent); color: var(--accent); }
+  .chip.medel { border-color: var(--muted); color: var(--ink); }
+  .chip.lag { border-color: var(--warn); color: var(--warn); }
+
+  /* Horisontsektioner */
+  ul.points { margin: 0; padding-left: 1.2rem; display: grid; gap: 0.7rem; max-width: 40rem; }
+  ul.points li::marker { color: var(--accent); }
+  .judgement {
+    display: flex; flex-wrap: wrap; gap: 0.5rem 0.9rem; align-items: baseline;
+    background: var(--accent-soft); border-radius: 12px; padding: 0.8rem 1rem; max-width: 40rem;
+  }
+  .judgement .label { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+
+  /* Scenarier */
+  .stack { display: flex; height: 54px; border-radius: 10px; overflow: hidden; border: 1px solid var(--line); }
+  .seg { display: grid; place-items: center; font-family: var(--font-mono); font-weight: 500; font-size: 0.95rem; font-variant-numeric: tabular-nums; min-width: 0; }
+  .seg.a { background: var(--scen-a); color: var(--bg); }
+  .seg.b { background: var(--scen-b); color: var(--on-accent); }
+  .seg.c { background: var(--scen-c); color: var(--bg); }
+  .scenarios { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  .scenario { display: grid; gap: 0.4rem; align-content: start; min-width: 0; }
+  .scenario .key { display: flex; gap: 0.5rem; align-items: center; font-family: var(--font-mono); font-size: 0.85rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .sw { width: 14px; height: 14px; border-radius: 3px; display: inline-block; }
+  .sw.a { background: var(--scen-a); } .sw.b { background: var(--scen-b); } .sw.c { background: var(--scen-c); }
+  @media (max-width: 720px) { .scenarios { grid-template-columns: 1fr; } }
+
+  ol.advice { margin: 0; padding-left: 1.4rem; display: grid; gap: 0.6rem; max-width: 40rem; }
+  ol.advice li::marker { font-family: var(--font-mono); color: var(--accent); }
+
+  .sources { display: grid; gap: 0.4rem; font-size: 0.92rem; max-width: 48rem; }
+  .sources ul { margin: 0; padding-left: 1.2rem; display: grid; gap: 0.3rem; }
+  .foot { color: var(--muted); font-size: 0.9rem; max-width: 40rem; }
+  body { margin: 0; }
+  img { max-width: 100%; }
+</style>
+</head>
+<body>
+<main class="page">
+
+  <header class="hero">
+    <span class="eyebrow">AI-kunskap · Framtidsspaning</span>
+    <h1>AI om 1, 3 och 5 år</h1>
+    <div class="prose">
+      <p class="lead">En spaning från oktober 2026 över hela AI-landskapet, inte bara generativ AI. Först läget i dag med kontrollerade siffror, sedan en bedömning för hösten 2027, 2029 och 2031.</p>
+      <p class="disclose">Spaningen är skriven av Claude, en AI-assistent från Anthropic. Några av modellerna som nämns är Anthropics egna. Siffrorna i faktatabellen har källor. Sannolikheterna är bedömningar, inte fakta.</p>
+    </div>
+  </header>
+
+  <section aria-label="Sammanfattning">
+    <span class="eyebrow">Sammanfattning</span>
+    <div class="horizons">
+      <div class="horizon">
+        <span class="when">Hösten 2027</span>
+        <span class="big">1 år</span>
+        <h3>AI börjar utföra uppgifter</h3>
+        <p>Agenter blir vardag, först inom programmering och administration. Den största akuta risken är cybersäkerhet.</p>
+      </div>
+      <div class="horizon">
+        <span class="when">Hösten 2029</span>
+        <span class="big">3 år</span>
+        <h3>Flaskhalsen flyttar</h3>
+        <p>Det som bromsar är el, datorkraft, data, juridik och förändringsledning. Den som har ordning på data och processer får ut mest.</p>
+      </div>
+      <div class="horizon">
+        <span class="when">Hösten 2031</span>
+        <span class="big">5 år</span>
+        <h3>Stark men ojämn</h3>
+        <p>Osäkerheten är stor. Mest troligt är en fortsatt stark men ojämn utveckling, med en möjlig finansiell korrektion på vägen.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <span class="eyebrow">Tidslinje</span>
+    <h2>Viktiga datum fram till 2031</h2>
+    <figure>
+      <div class="fig-frame">
+        <svg viewBox="0 0 920 230" role="img" aria-label="Tidslinje från oktober 2026 till hösten 2031. Spaningens tre horisonter ligger hösten 2027, 2029 och 2031. Under linjen syns fasta datum: märkning av AI-innehåll 2 december 2026, EU:s högriskregler 2 december 2027, AI i reglerade produkter 2 augusti 2028, år 2030 då IEA räknar med fördubblad el i datacenter och AI-verkstaden ska vara klar, samt 2 augusti 2030 för myndigheters befintliga högrisksystem.">
+          <!-- skala: x = 60 + (år - 2026,5) × 150 -->
+          <line class="d-axis" x1="40" y1="110" x2="895" y2="110"/>
+          <line class="d-tick" x1="135" y1="104" x2="135" y2="116"/>
+          <line class="d-tick" x1="285" y1="104" x2="285" y2="116"/>
+          <line class="d-tick" x1="435" y1="104" x2="435" y2="116"/>
+          <line class="d-tick" x1="585" y1="104" x2="585" y2="116"/>
+          <line class="d-tick" x1="735" y1="104" x2="735" y2="116"/>
+          <line class="d-tick" x1="885" y1="104" x2="885" y2="116"/>
+          <text class="d-year" x="135" y="132" text-anchor="middle">2027</text>
+          <text class="d-year" x="285" y="132" text-anchor="middle">2028</text>
+          <text class="d-year" x="435" y="132" text-anchor="middle">2029</text>
+          <text class="d-year" x="585" y="132" text-anchor="middle">2030</text>
+          <text class="d-year" x="735" y="132" text-anchor="middle">2031</text>
+          <text class="d-year" x="885" y="132" text-anchor="middle">2032</text>
+
+          <!-- Horisonter -->
+          <circle class="d-dot-now" cx="103.5" cy="110" r="7"/>
+          <text class="d-h" x="103.5" y="70" text-anchor="middle">Nu</text>
+          <text class="d-hs" x="103.5" y="88" text-anchor="middle">okt 2026</text>
+          <circle class="d-dot" cx="253.5" cy="110" r="9"/>
+          <text class="d-h" x="253.5" y="70" text-anchor="middle">1 år</text>
+          <text class="d-hs" x="253.5" y="88" text-anchor="middle">hösten 2027</text>
+          <circle class="d-dot" cx="553.5" cy="110" r="9"/>
+          <text class="d-h" x="553.5" y="70" text-anchor="middle">3 år</text>
+          <text class="d-hs" x="553.5" y="88" text-anchor="middle">hösten 2029</text>
+          <circle class="d-dot" cx="853.5" cy="110" r="9"/>
+          <text class="d-h" x="853.5" y="70" text-anchor="middle">5 år</text>
+          <text class="d-hs" x="853.5" y="88" text-anchor="middle">hösten 2031</text>
+
+          <!-- Händelser, rad 1 -->
+          <line class="d-tick-acc" x1="123" y1="114" x2="123" y2="146"/>
+          <circle class="d-ev" cx="123" cy="110" r="4"/>
+          <text class="d-date" x="128" y="160">2 dec 2026</text>
+          <text class="d-lab" x="128" y="176">Märkning av AI-text</text>
+          <line class="d-tick-acc" x1="372" y1="114" x2="372" y2="146"/>
+          <circle class="d-ev" cx="372" cy="110" r="4"/>
+          <text class="d-date" x="377" y="160">2 aug 2028</text>
+          <text class="d-lab" x="377" y="176">AI i reglerade produkter</text>
+          <line class="d-tick-acc" x1="672" y1="114" x2="672" y2="146"/>
+          <circle class="d-ev" cx="672" cy="110" r="4"/>
+          <text class="d-date" x="677" y="160">2 aug 2030</text>
+          <text class="d-lab" x="677" y="176">Myndigheters äldre högrisksystem</text>
+
+          <!-- Händelser, rad 2 -->
+          <line class="d-tick-acc" x1="273" y1="114" x2="273" y2="190"/>
+          <circle class="d-ev" cx="273" cy="110" r="4"/>
+          <text class="d-date" x="278" y="204">2 dec 2027</text>
+          <text class="d-lab" x="278" y="220">EU:s högriskregler gäller</text>
+          <line class="d-tick-acc" x1="585" y1="114" x2="585" y2="190"/>
+          <circle class="d-ev" cx="585" cy="110" r="4"/>
+          <text class="d-date" x="590" y="204">2030</text>
+          <text class="d-lab" x="590" y="220">El i datacenter ×2 (IEA) · AI-verkstad klar</text>
+        </svg>
+      </div>
+      <figcaption>Fyllda prickar är spaningens tre horisonter. Datumen under linjen kommer från EU:s AI-förordning, IEA och regeringens AI-strategi. Skalan är ett år per streck.</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <span class="eyebrow">Läget i oktober 2026</span>
+    <h2>Kontrollerade fakta</h2>
+    <div class="prose">
+      <p>Varje rad har en källa. Kolumnen <strong>Säkerhet</strong> visar hur väl uppgiften håller: hög när den kommer från en förstahandskälla eller flera oberoende källor, lägre när källorna spretar.</p>
+    </div>
+    <div class="table-wrap">
+      <table class="facts">
+        <thead>
+          <tr><th scope="col">Område</th><th scope="col">Läge</th><th scope="col">Säkerhet</th><th scope="col">Källa</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">Agenters förmåga</th><td>Längden på uppgifter som AI klarar själv har fördubblats ungefär var 7:e månad sedan 2019, de senaste åren snarare var 4:e. Mätningar över cirka 16 timmar är enligt METR osäkra.</td><td><span class="chip medel">Medel</span></td><td class="src"><a href="https://metr.org/blog/2025-03-19-measuring-ai-ability-to-complete-long-tasks/">METR</a></td></tr>
+          <tr><th scope="row">Investeringar</th><td>Microsoft, Alphabet, Amazon och Meta planerar runt 725 miljarder dollar 2026, cirka 77 % mer än 2025.</td><td><span class="chip hog">Hög</span></td><td class="src"><a href="https://insight.factset.com/hyperscalers-tap-external-financing-as-ai-capex-outruns-cash-flow">FactSet</a></td></tr>
+          <tr><th scope="row">Finansiell risk</th><td>IMF:s stabilitetsrapport 13 oktober 2026 pekar ut en AI-korrektion som en av tre tänkbara utlösare av marknadsoro.</td><td><span class="chip hog">Hög</span></td><td class="src"><a href="https://www.kitco.com/news/off-the-wire/2026-10-13/imf-flags-risks-global-economy-ai-market-correction-war-and-debt">Reuters via Kitco</a></td></tr>
+          <tr><th scope="row">Energi</th><td>Datacentrens elanvändning ökade 17 % under 2025. IEA räknar med en fördubbling till 2030, cirka 945 TWh.</td><td><span class="chip hog">Hög</span></td><td class="src"><a href="https://www.rigzone.com/news/data_center_electricity_use_surges-20-apr-2026-183486-article/">IEA via Rigzone</a></td></tr>
+          <tr><th scope="row">EU:s AI-förordning</th><td>Ändringspaketet Digital Omnibus gäller sedan 27 juli 2026. Högriskkraven flyttas till 2 december 2027, AI i reglerade produkter till 2 augusti 2028. Transparenskraven gäller sedan augusti 2026.</td><td><span class="chip hog">Hög</span></td><td class="src"><a href="https://cdp.cooley.com/digital-ai-omnibus-delays-key-deadlines-introduces-new-rules/">Cooley</a></td></tr>
+          <tr><th scope="row">Geopolitik</th><td>12 juni 2026 stoppade en amerikansk exportkontroll två av Anthropics modeller för utländska medborgare. Modellerna stängdes av för alla kunder till 1 juli.</td><td><span class="chip hog">Hög</span></td><td class="src"><a href="https://www.anthropic.com/news/fable-mythos-access">Anthropic</a></td></tr>
+          <tr><th scope="row">Öppna modeller</th><td>Kinesiska öppna modeller ligger i snitt cirka 7 månader efter de stängda spetsmodellerna.</td><td><span class="chip medel">Medel</span></td><td class="src"><a href="https://startupfortune.com/chinas-open-ai-models-now-trail-the-us-frontier-by-just-seven-months/">Epoch AI via Startup Fortune</a></td></tr>
+          <tr><th scope="row">Robotaxi</th><td>Waymo körde 500 000 betalda resor i veckan i mars 2026 och siktar på 1 miljon i slutet av året.</td><td><span class="chip hog">Hög</span></td><td class="src"><a href="https://techcrunch.com/2026/03/27/waymo-skyrocketing-ridership-in-one-chart/">TechCrunch</a></td></tr>
+          <tr><th scope="row">Humanoida robotar</th><td>Unitree levererade drygt 5 500 under 2025. Andra tillverkare har några hundra i fabrikspiloter.</td><td><span class="chip lag">Låg–medel</span></td><td class="src"><a href="https://www.forbes.com/sites/jonmarkman/2026/04/27/unitree-g1-humanoid-robots-are-reshaping-the-robotics-investment-stack/">Forbes</a></td></tr>
+          <tr><th scope="row">Läkemedel</th><td>Inget AI-upptäckt läkemedel är godkänt ännu. Insilicos rentosertib ska ha gått in i fas III i juli 2026.</td><td><span class="chip medel">Medel</span></td><td class="src"><a href="https://www.biopharmadive.com/news/ai-drug-discovery-insilico-recursion-verge/825367/">BiopharmaDive</a></td></tr>
+          <tr><th scope="row">Arbetsmarknad</th><td>Ingen tydlig effekt på total sysselsättning. Relativ nedgång på cirka 13–16 % för 22–25-åringar i de mest AI-utsatta yrkena. Orsaken är omdiskuterad.</td><td><span class="chip medel">Medel</span></td><td class="src"><a href="https://arxiv.org/pdf/2602.21012">AI Safety Report 2026</a></td></tr>
+          <tr><th scope="row">Produktivitet</th><td>Cirka 4 % högre produktivitet i europeiska företag som använder AI, utan minskad sysselsättning på kort sikt.</td><td><span class="chip medel">Medel–hög</span></td><td class="src"><a href="https://www.eib.org/en/publications/20250383-economics-working-paper-2026-02">EIB</a></td></tr>
+          <tr><th scope="row">Sverige</th><td>35 % av företagen använde AI 2025, plats tre i EU (snitt 20 %). AI-strategin från februari 2026 siktar på att Sverige ska vara bäst i världen på AI i offentlig förvaltning.</td><td><span class="chip hog">Hög</span></td><td class="src"><a href="https://www.regeringen.se/pressmeddelanden/2026/02/sveriges-forsta-heltackande-ai-strategi-ska-ge-en-topp-tio-placering/">Regeringen</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <span class="eyebrow">Om 1 år · hösten 2027</span>
+    <h2>AI går från att svara till att utföra</h2>
+    <ul class="points">
+      <li><strong>Agenter blir vardag inom programmering.</strong> Uppgifter som tar en människa flera dagar görs av AI medan en människa granskar. Annat kontorsarbete går långsammare, eftersom kopplingar till verksamhetssystemen och förtroendet släpar efter. Där gör standarder som MCP skillnad.</li>
+      <li><strong>Cybersäkerhet blir den stora AI-frågan.</strong> Modeller som själva hittar och utnyttjar sårbarheter finns redan. Räkna med fler incidenter där AI hjälpt angriparen och ett hårdare tryck på att patcha snabbt.</li>
+      <li><strong>Ett förberedelseår för EU-reglerna.</strong> Märkning av AI-innehåll ska vara klar i december 2026 och högriskkraven gäller från december 2027. Under 2027 behöver organisationer inventera och klassa sina AI-system.</li>
+      <li><strong>Den icke-generativa AI:n växer i det tysta.</strong> Prognoser, bildanalys, ruttoptimering och dokumenthantering ger ofta mer värde i offentlig sektor än chattbottar.</li>
+      <li><strong>Kommunerna</strong> går från att enskilda medarbetare använder AI på eget initiativ till styrda verktyg för hela organisationen. Upphandling, dataskydd och informationssäkerhet sätter takten.</li>
+    </ul>
+    <div class="judgement">
+      <span class="label">Bedömning</span>
+      <span>Ungefär <strong>en på tre</strong> att AI-kopplade aktier faller kraftigt inom 12 månader. Det bromsar investeringarna men inte användningen.</span>
+    </div>
+  </section>
+
+  <section>
+    <span class="eyebrow">Om 3 år · hösten 2029</span>
+    <h2>Flaskhalsen är inte längre modellerna</h2>
+    <ul class="points">
+      <li><strong>Agenter som kollegor.</strong> AI förbereder ärenden, skriver utkast till beslut och sammanställer underlag. Människan beslutar och bär ansvaret. Det tunga arbetet handlar om rättssäkerhet och spårbarhet.</li>
+      <li><strong>Öppna modeller räcker för det mesta.</strong> Det blir realistiskt att köra kraftfulla modeller i egen regi eller i en svensk eller europeisk molntjänst. Exportkontrollen i juni 2026 visar varför det är klokt att inte bero på en enda leverantör.</li>
+      <li><strong>El och elnät blir den verkliga flaskhalsen.</strong> De nordiska länderna blir attraktiva för datacenter, vilket skapar lokala konflikter om el och mark.</li>
+      <li><strong>Arbetsmarknad:</strong> ingen massarbetslöshet, men färre ingångsjobb i yrken med mycket text och kod. Unga och nyanställda märker det först.</li>
+      <li><strong>Vetenskap:</strong> AI blir ett standardverktyg inom forskning om material, proteiner och klimat.</li>
+      <li><strong>Fysisk AI:</strong> robotaxi i många fler städer i USA och Asien, troligen även London. Humanoida robotar finns i tiotusental i fabriker och lager, men är ovanliga i hemmen.</li>
+    </ul>
+    <div class="judgement">
+      <span class="label">Bedömning</span>
+      <span>Ungefär <strong>50 %</strong> att det första AI-upptäckta läkemedlet blir godkänt senast 2029–2030.</span>
+    </div>
+  </section>
+
+  <section>
+    <span class="eyebrow">Om 5 år · hösten 2031</span>
+    <h2>Tre scenarier</h2>
+    <div class="prose">
+      <p>Fem år fram är osäkerheten så stor att det är ärligare att tala om scenarier än om en prognos. Stapeln visar hur jag väger dem.</p>
+    </div>
+    <figure>
+      <div class="stack" role="img" aria-label="Fortsatt snabb utveckling 35 procent, stark men ojämn 50 procent, tydlig avmattning 15 procent.">
+        <div class="seg a" style="width: 35%">35 %</div>
+        <div class="seg b" style="width: 50%">50 %</div>
+        <div class="seg c" style="width: 15%">15 %</div>
+      </div>
+      <figcaption>Sannolikheterna är mina bedömningar och summerar till 100 %.</figcaption>
+    </figure>
+    <div class="scenarios">
+      <div class="scenario">
+        <span class="key"><i class="sw a"></i>35 %</span>
+        <h3>Fortsatt snabb utveckling</h3>
+        <p>AI utför merparten av digitala kunskapsuppgifter självständigt. Stora produktivitetsvinster och stor press på arbetsmarknad och politik. Prognosplattformen Metaculus väntar sig en svagare form av AGI runt 2028 och full AGI runt 2033.</p>
+      </div>
+      <div class="scenario">
+        <span class="key"><i class="sw b"></i>50 %</span>
+        <h3>Stark men ojämn</h3>
+        <p>Stort värde där data och processer är ordnade, mindre i övrigt. En korrektion på vägen och färre leverantörer. Energi och regler styr takten.</p>
+      </div>
+      <div class="scenario">
+        <span class="key"><i class="sw c"></i>15 %</span>
+        <h3>Tydlig avmattning</h3>
+        <p>Förmågorna planar ut, investeringarna minskar kraftigt och AI blir en vanlig it-teknik. Användbar, men utan genombrott.</p>
+      </div>
+    </div>
+    <div class="prose">
+      <p><strong>I alla tre scenarierna</strong> finns AI inbyggt i nästan all programvara, cyberhoten är större, digitalt oberoende blir en strategisk fråga och förmågan att styra och granska AI blir viktigare än att använda den.</p>
+    </div>
+  </section>
+
+  <section>
+    <span class="eyebrow">För en kommun</span>
+    <h2>Vad kan man göra nu?</h2>
+    <ol class="advice">
+      <li><strong>Ordna data och behörigheter.</strong> Det är grunden för all agent-AI och åldras inte.</li>
+      <li><strong>Inventera och klassa AI-systemen</strong> inför december 2027.</li>
+      <li><strong>Bygg så att ni kan byta leverantör:</strong> öppna standarder som MCP, möjlighet att byta modell och öppna modeller som reserv.</li>
+      <li><strong>Satsa på cybersäkerhet med AI-perspektiv</strong>, både för att försvara er och för att förstå de nya hoten.</li>
+      <li><strong>Ta hand om ingångsjobben.</strong> Hitta nya sätt för nyanställda att lära sig yrket när AI gör de enklaste uppgifterna.</li>
+    </ol>
+  </section>
+
+  <section>
+    <span class="eyebrow">Ärligt redovisat</span>
+    <h2>Det här kunde inte bekräftas</h2>
+    <ul class="points">
+      <li>Uppgifter om nya modellversioner efter juli 2026.</li>
+      <li>Hur många humanoida robotar Figure har levererat. Källorna anger allt från 150 till 350.</li>
+      <li>En uppdaterad siffra på 19 % i Stanfords studie om unga på arbetsmarknaden.</li>
+      <li>Exakta belopp i budgeten för den svenska AI-strategin.</li>
+    </ul>
+  </section>
+
+  <section class="sources">
+    <h2>Källor</h2>
+    <ul>
+      <li>EU:s AI-förordning: <a href="https://cdp.cooley.com/digital-ai-omnibus-delays-key-deadlines-introduces-new-rules/">Cooley</a> · <a href="https://www.gibsondunn.com/eu-ai-act-omnibus-agreement-postponed-high-risk-deadlines-and-other-key-changes/">Gibson Dunn</a> · <a href="https://www.joneswalker.com/en/insights/blogs/ai-law-blog/yes-august-2-still-matters-the-eu-approved-a-high-risk-ai-delay-but-most-trans.html">Jones Walker</a></li>
+      <li>Agenter: <a href="https://metr.org/blog/2025-03-19-measuring-ai-ability-to-complete-long-tasks/">METR</a> · <a href="https://metr.org/notes/2026-01-22-time-horizon-limitations/">METR om begränsningar</a></li>
+      <li>Modeller och geopolitik: <a href="https://www.anthropic.com/news/fable-mythos-access">Anthropic, 12 juni</a> · <a href="https://www.anthropic.com/news/redeploying-fable-5">Anthropic, 1 juli</a> · <a href="https://www.bis.org/publ/bisbull129.pdf">BIS om cyberrisk</a> · <a href="https://techcrunch.com/2026/04/24/deepseek-previews-new-ai-model-that-closes-the-gap-with-frontier-models/">TechCrunch om DeepSeek V4</a></li>
+      <li>Ekonomi: <a href="https://insight.factset.com/hyperscalers-tap-external-financing-as-ai-capex-outruns-cash-flow">FactSet</a> · <a href="https://www.kitco.com/news/off-the-wire/2026-10-13/imf-flags-risks-global-economy-ai-market-correction-war-and-debt">IMF via Kitco</a> · <a href="https://www.axios.com/2026/10/08/openai-50-billion-arr-anthropic-revenue-accounting">Axios om intäkter</a> · <a href="https://www.federalreserve.gov/econres/notes/feds-notes/the-ai-buildout-and-the-economy-publicly-available-data-to-assess-ais-impact-20260717.html">Federal Reserve</a> · <a href="https://www.nber.org/papers/w34984">NBER</a></li>
+      <li>Energi: <a href="https://www.rigzone.com/news/data_center_electricity_use_surges-20-apr-2026-183486-article/">IEA via Rigzone</a> · <a href="https://asiacleanenergyforum.adb.org/wp-content/uploads/2026/06/Key-questions-on-energy-and-AI.pdf">IEA: Key questions on energy and AI</a></li>
+      <li>Robotar och robotaxi: <a href="https://techcrunch.com/2026/03/27/waymo-skyrocketing-ridership-in-one-chart/">TechCrunch</a> · <a href="https://www.forbes.com/sites/jonmarkman/2026/04/27/unitree-g1-humanoid-robots-are-reshaping-the-robotics-investment-stack/">Forbes</a></li>
+      <li>Läkemedel: <a href="https://www.biopharmadive.com/news/ai-drug-discovery-insilico-recursion-verge/825367/">BiopharmaDive</a> · <a href="https://intuitionlabs.ai/articles/ai-drug-discovery-fda-approvals">IntuitionLabs</a></li>
+      <li>Arbete och produktivitet: <a href="https://arxiv.org/pdf/2602.21012">International AI Safety Report 2026</a> · <a href="https://www.eib.org/en/publications/20250383-economics-working-paper-2026-02">EIB</a></li>
+      <li>Sverige: <a href="https://www.regeringen.se/pressmeddelanden/2026/02/sveriges-forsta-heltackande-ai-strategi-ska-ge-en-topp-tio-placering/">Regeringen</a> · <a href="https://www.implicator.ai/denmark-leads-europe-in-business-ai-use-at-42-eurostat-data-shows/">Eurostat via Implicator</a> · <a href="https://www.eurohpc-ju.europa.eu/eurohpc-ju-signs-contract-deploy-new-ai-optimised-supercomputer-sweden-2026-04-21_en">EuroHPC</a> · <a href="https://www.akavia.se/siteassets/04-om-akavia/rapporter/ai-i-kommunens-tjanst-sa-anvander-sverges-kommuner-ai.pdf">Akavia</a></li>
+      <li>Prognoser: <a href="https://www.lesswrong.com/posts/dRbvHfEwb6Cuf6xn3/forecasting-agi-insights-from-prediction-markets-and-1">Metaculus-prognoser</a> · <a href="https://80000hours.org/2025/03/when-do-experts-expect-agi-to-arrive/">80,000 Hours</a></li>
+    </ul>
+    <p class="foot">Spaningen gjordes 19 oktober 2026. Läget förändras snabbt, så kontrollera siffrorna mot källorna innan du använder dem i beslut.</p>
+  </section>
+
+</main>
+</body>
+</html>
