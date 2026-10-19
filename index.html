@@ -62,8 +62,8 @@
   header { display: grid; gap: 1rem; }
   .lead { font-size: 1.25rem; line-height: 1.55; max-width: 40rem; }
 
-  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
-  @media (max-width: 760px) { .cards { grid-template-columns: 1fr; } }
+  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  @media (max-width: 640px) { .cards { grid-template-columns: 1fr; } }
   a.card {
     display: grid; gap: 0.5rem; align-content: start; min-width: 0;
     background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
@@ -101,6 +101,12 @@
       <span class="abbr">Framtidsspaning · oktober 2026</span>
       <h2>AI om 1, 3 och 5 år</h2>
       <p>Läget i dag med kontrollerade fakta, en tidslinje till 2031 och bedömningar av vad som händer framåt.</p>
+      <span class="go">Läs sidan →</span>
+    </a>
+    <a class="card" href="cybersakerhetslagen.html">
+      <span class="abbr">NIS2 · Säkerhet</span>
+      <h2>Cybersäkerhetslagen (NIS2)</h2>
+      <p>Vem som omfattas, de fem huvudkraven, incidentrapportering inom 24 och 72 timmar och vad lagen betyder för en kommun.</p>
       <span class="go">Läs sidan →</span>
     </a>
   </section>

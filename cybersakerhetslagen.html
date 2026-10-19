@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cybersäkerhetslagen (NIS2)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+  /* Layout: samma läskolumn som resten av serien; flödesbilder och tabeller får gå bredare. */
+  :root {
+    --bg: #F2F5F7;
+    --surface: #FFFFFF;
+    --ink: #12222C;
+    --muted: #4C5D68;
+    --line: #B9C7D0;
+    --accent: #0E7A72;
+    --accent-soft: #DDF1EE;
+    --on-accent: #FFFFFF;
+    --warn: #C2410C;
+    --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+    --font-body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0D1519; --surface: #152127; --ink: #E5EDF1; --muted: #9DB0BA;
+      --line: #34474F; --accent: #3CCFBE; --accent-soft: #123430; --on-accent: #06201D; --warn: #FB8A4C;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0D1519; --surface: #152127; --ink: #E5EDF1; --muted: #9DB0BA;
+    --line: #34474F; --accent: #3CCFBE; --accent-soft: #123430; --on-accent: #06201D; --warn: #FB8A4C;
+    color-scheme: dark;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+  }
+  .page {
+    max-width: 56rem;
+    margin: 0 auto;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    padding-block: 3rem 4rem;
+    display: grid;
+    gap: 3.5rem;
+  }
+  .prose { max-width: 40rem; }
+  .prose > * + * { margin-top: 0.85rem; }
+  h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; line-height: 1.15; }
+  h1 { font-size: clamp(1.9rem, 8vw, 3.75rem); font-weight: 800; letter-spacing: -0.02em; overflow-wrap: anywhere; }
+  h2 { font-size: clamp(1.5rem, 3.6vw, 2rem); font-weight: 800; letter-spacing: -0.01em; }
+  h3 { font-size: 1.2rem; font-weight: 600; }
+  p { margin: 0; }
+  a { color: var(--accent); }
+  a:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .eyebrow {
+    font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--accent);
+  }
+  .lead { font-size: 1.25rem; line-height: 1.55; }
+  .abbr { color: var(--accent); font-weight: 700; }
+  code, .mono { font-family: var(--font-mono); font-size: 0.9em; }
+
+  header.hero { display: grid; gap: 1rem; }
+  header.hero > * { min-width: 0; }
+  .hero .prose > * + * { margin-top: 1rem; }
+  .analogy {
+    display: inline-flex; flex-wrap: wrap; gap: 0.5rem 0.75rem; align-items: center;
+    border: 1.5px solid var(--accent); border-radius: 999px; padding: 0.5rem 1rem;
+    font-weight: 700; color: var(--ink); background: var(--accent-soft);
+  }
+
+  section { display: grid; gap: 1.25rem; }
+
+  /* Figurer */
+  figure { margin: 0; display: grid; gap: 0.6rem; }
+  figcaption { color: var(--muted); font-size: 0.95rem; max-width: 40rem; }
+  .fig-frame {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+    padding: 1rem; overflow-x: auto;
+  }
+  .fig-frame svg { display: block; width: 100%; height: auto; min-width: 600px; }
+  .d-box { fill: var(--surface); stroke: var(--line); stroke-width: 1.5; }
+  .d-box-acc { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.5; }
+  .d-box-on { fill: var(--accent); stroke: var(--accent); stroke-width: 1.5; }
+  .d-box-mute { fill: var(--bg); stroke: var(--line); stroke-width: 1.5; stroke-dasharray: 4 4; }
+  .d-text { fill: var(--ink); font-family: var(--font-body); font-size: 13px; }
+  .d-text-b { fill: var(--ink); font-family: var(--font-body); font-size: 13px; font-weight: 700; }
+  .d-dim { fill: var(--muted); font-family: var(--font-body); font-size: 13px; }
+  .d-small { fill: var(--muted); font-family: var(--font-body); font-size: 12px; }
+  .d-mono { fill: var(--accent); font-family: var(--font-mono); font-size: 11px; }
+  .d-big { fill: var(--accent); font-family: var(--font-display); font-size: 22px; font-weight: 800; }
+  .d-on-acc { fill: var(--on-accent); font-family: var(--font-body); font-size: 13px; font-weight: 700; }
+  .d-line { stroke: var(--muted); stroke-width: 1.5; fill: none; }
+  .d-line-acc { stroke: var(--accent); stroke-width: 2; fill: none; }
+  .d-dash { stroke: var(--line); stroke-width: 1.5; stroke-dasharray: 4 5; fill: none; }
+  .d-arrowhead { fill: var(--muted); }
+  .d-arrowhead-acc { fill: var(--accent); }
+
+  /* Två kategorier */
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .cat {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+    padding: 1.1rem; display: grid; gap: 0.4rem; align-content: start; min-width: 0;
+  }
+  .cat .term { font-family: var(--font-mono); font-size: 0.8rem; color: var(--muted); }
+  @media (max-width: 640px) { .pair { grid-template-columns: 1fr; } }
+
+  /* Fem krav */
+  .reqs { display: grid; gap: 0; max-width: 48rem; border-top: 1px solid var(--line); }
+  .req {
+    display: grid; grid-template-columns: 13rem 1fr; gap: 0.5rem 1.5rem;
+    padding-block: 1.1rem; border-bottom: 1px solid var(--line);
+  }
+  .req > * { min-width: 0; }
+  .req .what { display: grid; gap: 0.2rem; align-content: start; }
+  .req .what .term { font-family: var(--font-mono); font-size: 0.78rem; color: var(--muted); }
+  .req ul { margin: 0.4rem 0 0; padding-left: 1.2rem; display: grid; gap: 0.25rem; }
+  .req ul li::marker { color: var(--accent); }
+  @media (max-width: 640px) { .req { grid-template-columns: 1fr; } }
+
+  /* Tabeller */
+  .table-wrap { overflow-x: auto; max-width: 48rem; }
+  table.data { border-collapse: collapse; width: 100%; min-width: 28rem; font-size: 0.98rem; }
+  table.data th, table.data td { text-align: left; vertical-align: top; padding: 0.6rem 0.75rem; border-bottom: 1px solid var(--line); }
+  table.data thead th {
+    font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--muted); border-bottom: 2px solid var(--line);
+  }
+  table.data tbody th { font-weight: 700; }
+  table.data td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  table.data tr.hl th, table.data tr.hl td { background: var(--accent-soft); }
+
+  /* Tillsyn-ruta */
+  .callout {
+    background: var(--accent-soft); border-radius: 14px; padding: 1.1rem 1.25rem;
+    display: grid; gap: 0.4rem; max-width: 40rem;
+  }
+  .callout .label { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+
+  ul.checks { margin: 0; padding: 0; list-style: none; display: grid; gap: 0.7rem; max-width: 40rem; }
+  ul.checks li { padding-left: 1.6rem; position: relative; }
+  ul.checks li::before {
+    content: ""; position: absolute; left: 0.2rem; top: 0.5rem; width: 0.7rem; height: 0.4rem;
+    border-left: 2.5px solid var(--accent); border-bottom: 2.5px solid var(--accent); transform: rotate(-45deg);
+  }
+
+  .remember { border-top: 3px solid var(--accent); padding-top: 1.5rem; display: grid; gap: 1rem; }
+  .remember ol { margin: 0; padding-left: 1.4rem; display: grid; gap: 0.6rem; max-width: 40rem; font-size: 1.1rem; }
+  .remember ol li::marker { font-family: var(--font-mono); color: var(--accent); }
+  .sources { display: grid; gap: 0.4rem; font-size: 0.92rem; max-width: 48rem; }
+  .sources ul { margin: 0; padding-left: 1.2rem; display: grid; gap: 0.3rem; }
+  .foot { color: var(--muted); font-size: 0.9rem; max-width: 40rem; }
+  body { margin: 0; }
+  img { max-width: 100%; }
+</style>
+</head>
+<body>
+<main class="page">
+
+  <header class="hero">
+    <span class="eyebrow">AI-kunskap · Säkerhet</span>
+    <h1>Cybersäkerhetslagen (NIS2)</h1>
+    <div class="prose">
+      <p class="lead"><span class="abbr">Cybersäkerhetslagen</span> är Sveriges version av EU:s <strong>NIS2-direktiv</strong>. Den kräver att viktiga verksamheter skyddar sina it-system systematiskt, rapporterar allvarliga incidenter snabbt och att <strong>ledningen tar ansvar</strong>. Kommuner och regioner omfattas.</p>
+      <p class="analogy">Kort sagt: systematiskt brandskyddsarbete, fast för it-systemen.</p>
+    </div>
+  </header>
+
+  <section>
+    <span class="eyebrow">Bakgrund</span>
+    <h2>Från EU-direktiv till svensk lag</h2>
+    <div class="prose">
+      <p><strong>NIS2</strong> är ett EU-direktiv från 2022. Det ersätter det äldre NIS-direktivet, gäller fler sektorer och ställer hårdare krav.</p>
+      <p>Sverige genomförde direktivet med <strong>cybersäkerhetslagen (2025:1506)</strong> och <strong>cybersäkerhetsförordningen (2025:1507)</strong>. Båda gäller sedan <strong>15 januari 2026</strong> och ersatte NIS-lagen från 2018. Lagen gäller de nätverks- och informationssystem som verksamheten är beroende av.</p>
+    </div>
+  </section>
+
+  <section>
+    <span class="eyebrow">Vem omfattas?</span>
+    <h2>Sektor, storlek och kategori</h2>
+    <figure>
+      <div class="fig-frame">
+        <svg viewBox="0 0 760 300" role="img" aria-label="Flödesschema. Företag: verkar ni i en sektor som lagen pekar ut, och är ni minst medelstora med 50 anställda eller 10 miljoner euro i omsättning? Om ja på båda omfattas ni som väsentlig eller viktig. Offentlig sektor: kommuner, regioner, kommunalförbund och statliga myndigheter med beredskapsansvar omfattas, och kategorin beror på storlek.">
+          <defs>
+            <marker id="f1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+              <path class="d-arrowhead" d="M0 0 L10 5 L0 10 z"/>
+            </marker>
+            <marker id="f1acc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+              <path class="d-arrowhead-acc" d="M0 0 L10 5 L0 10 z"/>
+            </marker>
+          </defs>
+
+          <text class="d-mono" x="20" y="12">FÖRETAG OCH ORGANISATIONER</text>
+          <rect class="d-box" x="20" y="24" width="220" height="56" rx="8"/>
+          <text class="d-text-b" x="130" y="48" text-anchor="middle">Verkar ni i en sektor</text>
+          <text class="d-text-b" x="130" y="66" text-anchor="middle">som lagen pekar ut?</text>
+          <line class="d-line-acc" x1="240" y1="52" x2="288" y2="52" marker-end="url(#f1acc)"/>
+          <text class="d-mono" x="264" y="44" text-anchor="middle">ja</text>
+          <rect class="d-box" x="290" y="24" width="220" height="56" rx="8"/>
+          <text class="d-text-b" x="400" y="48" text-anchor="middle">Minst medelstora?</text>
+          <text class="d-small" x="400" y="66" text-anchor="middle">50 anställda eller 10 M€</text>
+          <line class="d-line-acc" x1="510" y1="52" x2="558" y2="52" marker-end="url(#f1acc)"/>
+          <text class="d-mono" x="534" y="44" text-anchor="middle">ja</text>
+          <rect class="d-box-on" x="560" y="24" width="180" height="56" rx="8"/>
+          <text class="d-on-acc" x="650" y="48" text-anchor="middle">Omfattas</text>
+          <text class="d-on-acc" x="650" y="66" text-anchor="middle">väsentlig eller viktig</text>
+
+          <line class="d-line" x1="130" y1="80" x2="130" y2="118" marker-end="url(#f1)"/>
+          <text class="d-small" x="138" y="104">nej</text>
+          <rect class="d-box-mute" x="20" y="120" width="220" height="40" rx="8"/>
+          <text class="d-dim" x="130" y="145" text-anchor="middle">Omfattas normalt inte</text>
+          <line class="d-line" x1="400" y1="80" x2="400" y2="118" marker-end="url(#f1)"/>
+          <text class="d-small" x="408" y="104">nej</text>
+          <rect class="d-box-mute" x="290" y="120" width="220" height="40" rx="8"/>
+          <text class="d-dim" x="400" y="145" text-anchor="middle">Omfattas bara i vissa fall</text>
+
+          <line class="d-dash" x1="20" y1="190" x2="740" y2="190"/>
+
+          <text class="d-mono" x="20" y="216">OFFENTLIG SEKTOR</text>
+          <rect class="d-box-acc" x="20" y="228" width="490" height="56" rx="8"/>
+          <text class="d-text-b" x="265" y="252" text-anchor="middle">Kommun, region eller kommunalförbund,</text>
+          <text class="d-text-b" x="265" y="270" text-anchor="middle">eller statlig myndighet med beredskapsansvar?</text>
+          <line class="d-line-acc" x1="510" y1="256" x2="558" y2="256" marker-end="url(#f1acc)"/>
+          <text class="d-mono" x="534" y="248" text-anchor="middle">ja</text>
+          <rect class="d-box-on" x="560" y="228" width="180" height="56" rx="8"/>
+          <text class="d-on-acc" x="650" y="252" text-anchor="middle">Omfattas</text>
+          <text class="d-on-acc" x="650" y="270" text-anchor="middle">kategori efter storlek</text>
+        </svg>
+      </div>
+      <figcaption>Förenklat. Vissa verksamheter omfattas oavsett storlek, till exempel leverantörer av viss digital infrastruktur. Fullmäktige är undantagna, men förvaltningen omfattas.</figcaption>
+    </figure>
+
+    <div class="pair">
+      <div class="cat">
+        <span class="term">Väsentliga verksamhetsutövare</span>
+        <h3>Hårdare granskning</h3>
+        <p>Tillsynen kan ske i förväg, och sanktionerna kan bli högre. Lagen har en egen kategori för kommuner och regioner som är större än ett medelstort företag.</p>
+      </div>
+      <div class="cat">
+        <span class="term">Viktiga verksamhetsutövare</span>
+        <h3>Granskas främst i efterhand</h3>
+        <p>Tillsynen sker oftast när något har hänt eller när det finns tecken på brister. Kraven på säkerhetsarbetet är i stort sett desamma.</p>
+      </div>
+    </div>
+    <div class="prose">
+      <p>En stor kommun som Helsingborg räknas sannolikt som väsentlig. Kontrollera kategorin med stadens säkerhetsfunktion.</p>
+    </div>
+  </section>
+
+  <section>
+    <span class="eyebrow">Vad kräver lagen?</span>
+    <h2>Fem huvudkrav</h2>
+    <div class="reqs">
+      <div class="req">
+        <div class="what"><span class="term">Anmälan</span><h3>Anmäla sig</h3></div>
+        <p>Verksamheten ska anmäla att den omfattas. Anmälan öppnade <strong>2 februari 2026</strong> och skulle göras inom 14 dagar. Den fristen har passerat.</p>
+      </div>
+      <div class="req">
+        <div class="what"><span class="term">Riskhantering</span><h3>Hantera risker systematiskt</h3></div>
+        <div>
+          <p>Åtgärderna ska bygga på en <strong>riskanalys</strong> och stå i proportion till riskerna. De ska omfatta bland annat:</p>
+          <ul>
+            <li>incidenthantering och kontinuitet, alltså att kunna fortsätta arbeta och återställa system efter en attack</li>
+            <li>säkerhet i leverantörskedjan</li>
+            <li>säkerhet när system köps in, utvecklas och underhålls</li>
+            <li>kryptering</li>
+            <li>personalsäkerhet, behörigheter och förteckning över tillgångar</li>
+            <li>säker inloggning och säkra kommunikationslösningar</li>
+          </ul>
+        </div>
+      </div>
+      <div class="req">
+        <div class="what"><span class="term">Ledningens ansvar</span><h3>Ledningen tar ansvar</h3></div>
+        <p><strong>Ledningen ska utbildas</strong> i riskhantering, och övriga anställda ska erbjudas utbildning. Ansvaret kan inte skjutas över på it-avdelningen. Försummar ledningen kraven kan det leda till sanktioner.</p>
+      </div>
+      <div class="req">
+        <div class="what"><span class="term">Rapportering</span><h3>Rapportera incidenter</h3></div>
+        <p>Betydande incidenter rapporteras i tre steg till NCSC, Nationellt cybersäkerhetscenter. Se bilden nedan.</p>
+      </div>
+      <div class="req">
+        <div class="what"><span class="term">Tillsyn</span><h3>Tåla granskning</h3></div>
+        <p>Tillsynsmyndigheten kan begära uppgifter, genomföra granskningar och besluta om åtgärder.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <span class="eyebrow">Incidentrapportering</span>
+    <h2>Tre steg efter en betydande incident</h2>
+    <figure>
+      <div class="fig-frame">
+        <svg viewBox="0 0 760 160" role="img" aria-label="Från att verksamheten får kännedom om en betydande incident: en första upplysning inom 24 timmar, en incidentanmälan med första bedömning inom 72 timmar, och en slutrapport inom en månad. Rapporterna går till NCSC.">
+          <defs>
+            <marker id="f2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+              <path class="d-arrowhead" d="M0 0 L10 5 L0 10 z"/>
+            </marker>
+          </defs>
+          <rect class="d-box" x="20" y="40" width="140" height="84" rx="42"/>
+          <text class="d-text-b" x="90" y="78" text-anchor="middle">Ni får</text>
+          <text class="d-text-b" x="90" y="96" text-anchor="middle">kännedom</text>
+          <line class="d-line" x1="160" y1="82" x2="198" y2="82" marker-end="url(#f2)"/>
+
+          <rect class="d-box-acc" x="200" y="30" width="160" height="104" rx="10"/>
+          <text class="d-big" x="280" y="66" text-anchor="middle">24 timmar</text>
+          <text class="d-text-b" x="280" y="92" text-anchor="middle">Första upplysning</text>
+          <text class="d-small" x="280" y="110" text-anchor="middle">att något har hänt</text>
+          <line class="d-line" x1="360" y1="82" x2="398" y2="82" marker-end="url(#f2)"/>
+
+          <rect class="d-box-acc" x="400" y="30" width="160" height="104" rx="10"/>
+          <text class="d-big" x="480" y="66" text-anchor="middle">72 timmar</text>
+          <text class="d-text-b" x="480" y="92" text-anchor="middle">Incidentanmälan</text>
+          <text class="d-small" x="480" y="110" text-anchor="middle">med första bedömning</text>
+          <line class="d-line" x1="560" y1="82" x2="598" y2="82" marker-end="url(#f2)"/>
+
+          <rect class="d-box-acc" x="600" y="30" width="150" height="104" rx="10"/>
+          <text class="d-big" x="675" y="66" text-anchor="middle">1 månad</text>
+          <text class="d-text-b" x="675" y="92" text-anchor="middle">Slutrapport</text>
+          <text class="d-small" x="675" y="110" text-anchor="middle">orsak och åtgärder</text>
+
+          <text class="d-small" x="380" y="154" text-anchor="middle">Mottagare: NCSC. Tiden räknas från att verksamheten fick kännedom om incidenten.</text>
+        </svg>
+      </div>
+      <figcaption>Stegen är inte ritade i skala. Fristerna är en bortre gräns: rapporten ska göras så snart det går.</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <span class="eyebrow">Följder</span>
+    <h2>Vad händer om man inte följer lagen?</h2>
+    <div class="prose">
+      <p>Tillsynsmyndigheten kan ge en <strong>anmärkning</strong>, ett <strong>föreläggande</strong> eller en <strong>sanktionsavgift</strong>.</p>
+    </div>
+    <div class="table-wrap">
+      <table class="data">
+        <thead><tr><th scope="col">Typ av verksamhet</th><th scope="col">Högsta sanktionsavgift</th></tr></thead>
+        <tbody>
+          <tr class="hl"><th scope="row">Kommun, region, statlig myndighet</th><td class="num">10 miljoner kronor (lägst 5 000 kr)</td></tr>
+          <tr><th scope="row">Väsentlig privat verksamhet</th><td class="num">10 miljoner euro eller 2 % av global omsättning</td></tr>
+          <tr><th scope="row">Viktig privat verksamhet</th><td class="num">7 miljoner euro eller 1,4 % av global omsättning</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="foot">Jag har inte hittat något fall där en kommun har fått en sanktionsavgift enligt lagen ännu (oktober 2026).</p>
+  </section>
+
+  <section>
+    <span class="eyebrow">Tidslinje</span>
+    <h2>Viktiga datum 2026</h2>
+    <div class="table-wrap">
+      <table class="data">
+        <thead><tr><th scope="col">Datum</th><th scope="col">Vad hände</th></tr></thead>
+        <tbody>
+          <tr><td class="num">15 jan 2026</td><td>Lagen och förordningen börjar gälla</td></tr>
+          <tr><td class="num">2 feb 2026</td><td>Anmälan öppnar, med 14 dagars frist</td></tr>
+          <tr><td class="num">1 jul 2026</td><td>Ansvaret för föreskrifterna flyttas från MCF (Myndigheten för civilt försvar) till FRA. Föreskrifter om incidentrapportering (MCFFS 2026:8) börjar gälla</td></tr>
+          <tr><td class="num">1 okt 2026</td><td>Föreskrifter om säkerhetsåtgärder och ledningsutbildning (MCFFS 2026:11) samt om säkerhetsrevisioner och skanning (MCFFS 2026:12) börjar gälla</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <span class="eyebrow">För en kommun</span>
+    <h2>Vad betyder det i praktiken?</h2>
+    <div class="callout">
+      <span class="label">Tillsyn i Skåne</span>
+      <p>För kommunerna i Skåne, Blekinge och Kronoberg är <strong>Länsstyrelsen i Skåne</strong> tillsynsmyndighet.</p>
+    </div>
+    <ul class="checks">
+      <li><strong>Kontrollera att anmälan är gjord</strong> och vilken kategori kommunen tillhör.</li>
+      <li><strong>Ha en aktuell riskanalys</strong> över de viktigaste systemen och vad som händer om de slås ut.</li>
+      <li><strong>Utbilda ledningen</strong>, alltså kommunledning och förvaltningsledning, och dokumentera att det är gjort.</li>
+      <li><strong>Öva incidentrapportering:</strong> vem gör vad under de första 24 timmarna, även en fredagkväll?</li>
+      <li><strong>Ställ krav på leverantörerna.</strong> Dataintrånget hos Miljödata 2025, som drabbade många kommuner, visar hur sårbar leverantörskedjan är.</li>
+      <li><strong>Planera för kontinuitet:</strong> säkerhetskopior som går att återställa och manuella rutiner som reserv.</li>
+    </ul>
+  </section>
+
+  <section>
+    <span class="eyebrow">Kopplingen till AI</span>
+    <h2>Varje AI-tjänst är ett nytt system</h2>
+    <div class="prose">
+      <p>En Copilot eller en MCP-koppling till mejl och dokument är <strong>ett nytt system i riskanalysen och en ny leverantör i leverantörskedjan</strong>. Cybersäkerhetslagen förbjuder inte AI, men kräver att den införs med samma ordning som andra it-system: riskbedömning, behörigheter, en plan för incidenter och krav på leverantören.</p>
+    </div>
+  </section>
+
+  <section class="remember">
+    <h2>Kom ihåg</h2>
+    <ol>
+      <li><strong>Kommuner och regioner omfattas</strong> av cybersäkerhetslagen sedan 15 januari 2026.</li>
+      <li>Lagen kräver <strong>riskhantering, utbildad ledning och snabb incidentrapportering</strong>: 24 timmar, 72 timmar, en månad.</li>
+      <li><strong>Ledningen bär ansvaret</strong>, och en kommun kan få en sanktionsavgift på upp till 10 miljoner kronor.</li>
+    </ol>
+    <p class="foot">Detta är en översikt, inte juridisk rådgivning. Lagtexten och föreskrifterna kunde inte läsas direkt när sidan skrevs; uppgifterna kommer från förarbeten, länsstyrelser och juristbyråer. Datumen för flytten till FRA och för föreskrifterna 1 oktober kommer från andrahandskällor. Kontrollera dem på mcf.se och ncsc.se innan du använder dem i beslut.</p>
+  </section>
+
+  <section class="sources">
+    <h2>Källor</h2>
+    <ul>
+      <li>Lag och förarbeten: <a href="https://www.riksdagen.se/sv/dokument-och-lagar/dokument/svensk-forfattningssamling/cybersakerhetslag-20251506_sfs-2025-1506/">Cybersäkerhetslag (2025:1506)</a> · <a href="https://data.riksdagen.se/dokument/sfs-2025-1507.html">Cybersäkerhetsförordning (2025:1507)</a> · <a href="https://www.riksdagen.se/sv/dokument-och-lagar/dokument/proposition/ett-starkt-skydd-for-natverks-och_hd0328/html/">Prop. 2025/26:28</a> · <a href="https://www.lagradet.se/wp-content/uploads/2025/06/Lrr-Ett-starkt-skydd-for-natverks-och-informationssystem-en-ny-cybersakerhetslag.pdf">Lagrådsremissen</a></li>
+      <li>Myndigheter: <a href="https://www.mcf.se/sv/amnesomraden/informationssakerhet-och-cybersakerhet/krav-och-regler-inom-informationssakerhet-och-cybersakerhet/nis-direktivet/cybersakerhetslagen-nis2/att-anmala-en-verksamhet/">MCF: Att anmäla en verksamhet</a> · <a href="https://www.ncsc.se/sv/radgivning-och-stod/hantera-och-rapportera-it-incidenter-och-cyberangrepp/rapportera-it-incident/rapportera-en-betydande-incident-enligt-cybersakerhetslagen-nis2/">NCSC: Rapportera en betydande incident</a> · <a href="https://www.transportstyrelsen.se/sv/om-oss/det-har-ar-transportstyrelsen/krisberedskap-och-sakerhet/cybersakerhet-nis2/">Transportstyrelsen om kategorierna</a></li>
+      <li>Länsstyrelser: <a href="https://www.lansstyrelsen.se/skane/samhalle/sakerhet-och-beredskap/tillsyn-av-cybersakerhet.html">Länsstyrelsen Skåne: Tillsyn av cybersäkerhet</a> · <a href="https://www.lansstyrelsen.se/skane/om-oss/nyheter-och-press/nyheter---skane/2026-01-15-sex-lansstyrelser-far-nytt-tillsynsuppdrag-inom-cybersakerhet.html">Sex länsstyrelser får tillsynsuppdrag</a> · <a href="https://www.lansstyrelsen.se/sodermanland/om-oss/nyheter-och-press/nyheter---sodermanland/2026-01-15-skarpta-krav-pa-verksamhetsutovare-nar-ny-cybersakerhetslag-borjar-galla.html">Länsstyrelsen Södermanland</a></li>
+      <li>Riskhantering och utbildning: <a href="https://www.regeringen.se/contentassets/968c4517fe2f49f3aa2b2284bf28316b/region-jonkopings-lan.pdf">Region Jönköpings läns remissvar</a> · <a href="https://www.cyberday.ai/requirement/nis2-sweden-3-3-utbildning-om-riskhanteringsatgarder">Cyberday om utbildningskravet</a></li>
+      <li>Översikter: <a href="https://zorc.se/kunskapsbank/lagar/cybersakerhetslagen">Zorc</a> · <a href="https://www.excedo.se/blog-articles/den-nya-cybersaekerhetslagen-vad-offentlig-sektor-behoever-veta">Excedo om offentlig sektor</a> · <a href="https://www.vinge.se/en/insights/2026/the-swedish-cybersecurity-act-autumn-2026-supervision-so-far-and-new-requirements-from-1-october/">Vinge, hösten 2026</a> · <a href="https://sverigesmotstandskraft.se/artiklar/foreskriftslaget-hosten-2026">Sveriges Digitala Motståndskraft</a> · <a href="https://ebuildersecurity.se/articles/miljodata-breach-lessons-nis2-supply-chain-sv/">eBuilder om Miljödata</a></li>
+    </ul>
+    <p class="foot">Sidan skrevs 19 oktober 2026.</p>
+  </section>
+
+</main>
+</body>
+</html>
